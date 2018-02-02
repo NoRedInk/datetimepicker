@@ -63,15 +63,23 @@ generateCalendarTest =
         [ test "generateCalendar for February 2016 (leap) should return a list of date" <|
             \() ->
                 DateUtils.generateCalendar Date.Sun Date.Feb 2016
-                    |> Expect.equal ([ previous 31 ] ++ (List.range 1 29 |> List.map current) ++ (List.range 1 12 |> List.map next))
+                    |> expectDaysAndShape ([ previous 31 ] ++ (List.range 1 29 |> List.map current) ++ (List.range 1 12 |> List.map next))
         , test "generateCalendar for February 2015 should return a list of date" <|
             \() ->
                 DateUtils.generateCalendar Date.Sun Date.Feb 2015
-                    |> Expect.equal ((List.range 25 31 |> List.map previous) ++ (List.range 1 28 |> List.map current) ++ (List.range 1 7 |> List.map next))
+                    |> expectDaysAndShape ((List.range 25 31 |> List.map previous) ++ (List.range 1 28 |> List.map current) ++ (List.range 1 7 |> List.map next))
         , test "generateCalendar for January 2099 should return a list of date" <|
             \() ->
                 DateUtils.generateCalendar Date.Sun Date.Jan 2099
-                    |> Expect.equal ((List.range 28 31 |> List.map previous) ++ (List.range 1 31 |> List.map current) ++ (List.range 1 7 |> List.map next))
+                    |> expectDaysAndShape ((List.range 28 31 |> List.map previous) ++ (List.range 1 31 |> List.map current) ++ (List.range 1 7 |> List.map next))
+        ]
+
+
+expectDaysAndShape : List DateUtils.Day -> List (List DateUtils.Day) -> Expect.Expectation
+expectDaysAndShape days =
+    Expect.all
+        [ List.concat >> Expect.equal days
+        , List.map List.length >> Expect.equal [ 7, 7, 7, 7, 7, 7 ]
         ]
 
 

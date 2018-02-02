@@ -47,7 +47,6 @@ import DateTimePicker.Svg
 import Html exposing (Html, button, div, input, li, span, table, tbody, td, text, th, thead, tr, ul)
 import Html.Attributes exposing (value)
 import Html.Events exposing (onBlur, onClick, onFocus)
-import List.Extra
 import String
 import Task
 import Time
@@ -885,10 +884,7 @@ calendar pickerType state currentDate =
 
                         body =
                             tbody [ class [ Days ] ]
-                                (days
-                                    |> List.Extra.groupsOf 7
-                                    |> List.map toWeekRow
-                                )
+                                (List.map toWeekRow days)
                     in
                     table [ class [ Calendar ] ]
                         [ header
@@ -922,9 +918,12 @@ dayNames config =
         shiftAmount =
             DateTimePicker.DateUtils.dayToInt Date.Sun config.firstDayOfWeek
     in
-    days
-        |> List.Extra.splitAt shiftAmount
-        |> (\( head, tail ) -> tail ++ head)
+    rotate shiftAmount days
+
+
+rotate : Int -> List a -> List a
+rotate n xs =
+    List.drop n xs ++ List.take n xs
 
 
 

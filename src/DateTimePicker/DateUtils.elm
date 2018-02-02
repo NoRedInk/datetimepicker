@@ -89,7 +89,7 @@ type MonthType
     | Next
 
 
-generateCalendar : Date.Day -> Date.Month -> Int -> List Day
+generateCalendar : Date.Day -> Date.Month -> Int -> List (List Day)
 generateCalendar firstDayOfWeek month year =
     let
         firstDateOfMonth =
@@ -121,7 +121,19 @@ generateCalendar firstDayOfWeek month year =
             List.range 1 14
                 |> List.map (Day Next)
     in
-    List.take 42 <| previousMonth ++ currentMonth ++ nextMonth
+    previousMonth
+        ++ currentMonth
+        ++ nextMonth
+        |> List.take 42
+        |> byWeek
+
+
+byWeek : List Day -> List (List Day)
+byWeek list =
+    if List.length list >= 7 then
+        List.take 7 list :: byWeek (List.drop 7 list)
+    else
+        []
 
 
 toDateTime : Int -> Date.Month -> Day -> Int -> Int -> Date.Date
